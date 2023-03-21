@@ -1,45 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/screens/features/authentication/email_screen.dart';
 import 'package:tiktok_clone/screens/features/authentication/widgets/form_button.dart';
 
-class UsernameScreen extends StatefulWidget {
-  const UsernameScreen({super.key});
+class PasswordScreen extends StatefulWidget {
+  const PasswordScreen({super.key});
 
   @override
-  State<UsernameScreen> createState() => _UsernameScreenState();
+  State<PasswordScreen> createState() => _PasswordScreenState();
 }
 
-class _UsernameScreenState extends State<UsernameScreen> {
-  String username = "";
-  final TextEditingController _usernameController = TextEditingController();
+class _PasswordScreenState extends State<PasswordScreen> {
+  String password = "";
+  final TextEditingController _passwordController = TextEditingController();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _usernameController.addListener(() {
+    _passwordController.addListener(() {
       setState(() {
-        username = _usernameController.text;
+        password = _passwordController.text;
       });
     });
   }
 
-  // 메모리에서 컨트롤러 제거
   @override
   void dispose() {
     // TODO: implement dispose
-    _usernameController.dispose();
+    _passwordController.dispose();
     super.dispose();
-  }
-
-  void onNextTap(BuildContext context) {
-    // 유효성 검사
-    if (username.isEmpty) return;
-
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => const EmailScreen(),
-    ));
   }
 
   @override
@@ -72,26 +61,17 @@ class _UsernameScreenState extends State<UsernameScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "Create username",
+              "Create password",
               style: TextStyle(
                 fontSize: Sizes.size20,
                 fontWeight: FontWeight.w600,
                 color: Colors.black,
               ),
             ),
-            Gaps.v14,
-            const Text(
-              "You can always change this later.",
-              style: TextStyle(color: Colors.black45),
-            ),
             Gaps.v28,
-            // Username 입력창
             TextField(
-              controller: _usernameController,
-              keyboardType: TextInputType.name,
-              onEditingComplete: () => onNextTap(context),
+              controller: _passwordController,
               decoration: InputDecoration(
-                hintText: "Username",
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey.shade400),
                 ),
@@ -101,10 +81,50 @@ class _UsernameScreenState extends State<UsernameScreen> {
               ),
               cursorColor: Theme.of(context).primaryColor,
             ),
+            Gaps.v10,
+            const Text(
+              "Your password must have:",
+              style: TextStyle(
+                fontSize: Sizes.size12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            Gaps.v10,
+            Row(
+              children: const [
+                Icon(
+                  Icons.check_circle_outline_outlined,
+                  size: Sizes.size20,
+                  color: Colors.green,
+                ),
+                Text(
+                  "8 to 20 characters",
+                  style: TextStyle(
+                    fontSize: Sizes.size12,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: const [
+                Icon(
+                  Icons.check_circle_outline_outlined,
+                  size: Sizes.size20,
+                  color: Colors.green,
+                ),
+                Text(
+                  "Letters, numbers, and special characters",
+                  style: TextStyle(
+                    fontSize: Sizes.size12,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ],
+            ),
             Gaps.v32,
             GestureDetector(
-              onTap: () => onNextTap(context),
-              child: FormButton(disabled: username.isEmpty),
+              child: FormButton(disabled: password.isEmpty),
             ),
           ],
         ),
