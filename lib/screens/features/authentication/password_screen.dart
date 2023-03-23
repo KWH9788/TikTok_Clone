@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/screens/features/authentication/birthday_screen.dart';
 import 'package:tiktok_clone/screens/features/authentication/widgets/form_button.dart';
 
 class PasswordScreen extends StatefulWidget {
@@ -12,6 +14,9 @@ class PasswordScreen extends StatefulWidget {
 
 class _PasswordScreenState extends State<PasswordScreen> {
   String password = "";
+  bool _obscure = true;
+  bool lenghtCheak = false;
+  bool mustIncludeCheck = false;
   final TextEditingController _passwordController = TextEditingController();
   @override
   void initState() {
@@ -29,6 +34,61 @@ class _PasswordScreenState extends State<PasswordScreen> {
     // TODO: implement dispose
     _passwordController.dispose();
     super.dispose();
+  }
+
+  bool _isLenghtCheck() {
+    if (password.length >= 8) {
+      setState(() {
+        lenghtCheak = true;
+      });
+      return true;
+    } else {
+      setState(() {
+        lenghtCheak = false;
+      });
+      return false;
+    }
+  }
+
+  bool _isMustIncludeCheck() {
+    final regExp = RegExp(
+        r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$");
+    if (regExp.hasMatch(password)) {
+      setState(() {
+        mustIncludeCheck = true;
+      });
+      return true;
+    }
+    setState(() {
+      mustIncludeCheck = false;
+    });
+    return false;
+  }
+
+  bool _isPasswordValied() {
+    // 규칙 체크
+    if (!_isLenghtCheck()) return true;
+    if (_isMustIncludeCheck()) return false;
+    return true;
+  }
+
+  void onClearTap() {
+    _passwordController.clear();
+  }
+
+  void onObscureTap() {
+    setState(() {
+      _obscure = !_obscure;
+    });
+  }
+
+  void _onSubmit() {
+    if (_isPasswordValied()) return;
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const BirthdayScreen(),
+        ));
   }
 
   @override
@@ -71,7 +131,33 @@ class _PasswordScreenState extends State<PasswordScreen> {
             Gaps.v28,
             TextField(
               controller: _passwordController,
+              obscureText: _obscure,
               decoration: InputDecoration(
+                suffix: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    GestureDetector(
+                      onTap: onClearTap,
+                      child: FaIcon(
+                        FontAwesomeIcons.solidCircleXmark,
+                        size: Sizes.size16,
+                        color: Colors.grey.shade400,
+                      ),
+                    ),
+                    Gaps.h20,
+                    GestureDetector(
+                      onTap: onObscureTap,
+                      child: FaIcon(
+                        _obscure
+                            ? FontAwesomeIcons.eyeSlash
+                            : FontAwesomeIcons.eye,
+                        size: Sizes.size16,
+                        color: Colors.grey.shade400,
+                      ),
+                    ),
+                    Gaps.h16,
+                  ],
+                ),
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey.shade400),
                 ),
@@ -91,13 +177,13 @@ class _PasswordScreenState extends State<PasswordScreen> {
             ),
             Gaps.v10,
             Row(
-              children: const [
+              children: [
                 Icon(
                   Icons.check_circle_outline_outlined,
                   size: Sizes.size20,
-                  color: Colors.green,
+                  color: _isLenghtCheck() ? Colors.green : Colors.red,
                 ),
-                Text(
+                const Text(
                   "8 to 20 characters",
                   style: TextStyle(
                     fontSize: Sizes.size12,
@@ -107,13 +193,13 @@ class _PasswordScreenState extends State<PasswordScreen> {
               ],
             ),
             Row(
-              children: const [
+              children: [
                 Icon(
                   Icons.check_circle_outline_outlined,
                   size: Sizes.size20,
-                  color: Colors.green,
+                  color: _isMustIncludeCheck() ? Colors.green : Colors.red,
                 ),
-                Text(
+                const Text(
                   "Letters, numbers, and special characters",
                   style: TextStyle(
                     fontSize: Sizes.size12,
@@ -124,7 +210,8 @@ class _PasswordScreenState extends State<PasswordScreen> {
             ),
             Gaps.v32,
             GestureDetector(
-              child: FormButton(disabled: password.isEmpty),
+              onTap: _onSubmit,
+              child: FormButton(disabled: _isPasswordValied()),
             ),
           ],
         ),
