@@ -110,7 +110,7 @@ class _TutorialScreenState extends State<TutorialScreen> {
             horizontal: Sizes.size36,
             vertical: Sizes.size24,
           ),
-          elevation: 3,
+          elevation: 0,
           child: AnimatedOpacity(
             opacity: Page.second == _page ? 1 : 0,
             duration: const Duration(milliseconds: 300),
