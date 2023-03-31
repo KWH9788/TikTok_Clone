@@ -50,9 +50,12 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
     // 유효성 검사
     if (birthday.isEmpty) return;
 
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => const InterestsScreen(),
-    ));
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (context) => const InterestsScreen(),
+      ),
+      (route) => false,
+    );
   }
 
   // DateFormat & TextField Context Update

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/screens/features/authentication/sign_up_screen.dart';
+import 'package:tiktok_clone/screens/features/main_navigation/main_navigation_screen.dart';
 
 void main() {
   runApp(const TiktokCloneApp());
@@ -28,7 +28,7 @@ class TiktokCloneApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const SignUpScreen(),
+      home: const MainNavigationScreen(),
     );
   }
 }
