@@ -39,6 +39,46 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      body: Stack(
+        children: [
+          Offstage(
+            offstage: _currentScreen != 0,
+            child: const Center(
+              child: Text(
+                "Home",
+                style: TextStyle(fontSize: Sizes.size28),
+              ),
+            ),
+          ),
+          Offstage(
+            offstage: _currentScreen != 1,
+            child: const Center(
+              child: Text(
+                "Discover",
+                style: TextStyle(fontSize: Sizes.size28),
+              ),
+            ),
+          ),
+          Offstage(
+            offstage: _currentScreen != 3,
+            child: const Center(
+              child: Text(
+                "Inbox",
+                style: TextStyle(fontSize: Sizes.size28),
+              ),
+            ),
+          ),
+          Offstage(
+            offstage: _currentScreen != 4,
+            child: const Center(
+              child: Text(
+                "Profile",
+                style: TextStyle(fontSize: Sizes.size28),
+              ),
+            ),
+          ),
+        ],
+      ),
       bottomNavigationBar: BottomAppBar(
         color: Colors.black,
         child: Padding(
@@ -50,24 +90,28 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 text: "Home",
                 selected: _currentScreen == 0,
                 icon: FontAwesomeIcons.house,
+                selectedicon: FontAwesomeIcons.house,
                 onTap: () => _onTabTap(0),
               ),
               NavTab(
                 text: "Discover",
                 selected: _currentScreen == 1,
-                icon: FontAwesomeIcons.magnifyingGlass,
+                icon: FontAwesomeIcons.compass,
+                selectedicon: FontAwesomeIcons.solidCompass,
                 onTap: () => _onTabTap(1),
               ),
               NavTab(
                 text: "Inbox",
                 selected: _currentScreen == 3,
-                icon: FontAwesomeIcons.solidMessage,
+                icon: FontAwesomeIcons.message,
+                selectedicon: FontAwesomeIcons.solidMessage,
                 onTap: () => _onTabTap(3),
               ),
               NavTab(
                 text: "Profile",
                 selected: _currentScreen == 4,
-                icon: FontAwesomeIcons.solidUser,
+                icon: FontAwesomeIcons.user,
+                selectedicon: FontAwesomeIcons.solidUser,
                 onTap: () => _onTabTap(4),
               ),
             ],
