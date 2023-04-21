@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tiktok_clone/constants/gaps.dart';
+import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/screens/features/videos/widgets/ui_button.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -15,12 +19,22 @@ class VideoPost extends StatefulWidget {
   State<VideoPost> createState() => _VideoPostState();
 }
 
-class _VideoPostState extends State<VideoPost> {
+class _VideoPostState extends State<VideoPost>
+    with SingleTickerProviderStateMixin {
+  // UI관련
+  String script = "This is sample video, testing video player";
+  bool scriptDetail = true;
+
+  // 비디오관련
+  final Duration animationDuration = const Duration(milliseconds: 300);
+  bool onPlaying = true;
   final VideoPlayerController _videoPlayerController =
       VideoPlayerController.asset("assets/videos/analysis_options.mp4");
+  late final AnimationController _animationController;
 
   void _initVideoPlayer() async {
     await _videoPlayerController.initialize();
+    await _videoPlayerController.setLooping(true);
     setState(() {});
   }
 
@@ -42,9 +56,14 @@ class _VideoPostState extends State<VideoPost> {
   void onTap() {
     if (_videoPlayerController.value.isPlaying) {
       _videoPlayerController.pause();
+      onPlaying = false;
+      _animationController.reverse();
     } else {
       _videoPlayerController.play();
+      onPlaying = true;
+      _animationController.forward();
     }
+    setState(() {});
   }
 
   @override
@@ -53,6 +72,13 @@ class _VideoPostState extends State<VideoPost> {
     super.initState();
     _initVideoPlayer();
     _videoPlayerController.addListener(onFinish);
+    _animationController = AnimationController(
+      vsync: this,
+      lowerBound: 1.0,
+      upperBound: 1.5,
+      duration: animationDuration,
+    );
+    if (script.length > 25) scriptDetail = false;
   }
 
   @override
@@ -76,11 +102,112 @@ class _VideoPostState extends State<VideoPost> {
                     color: Colors.black,
                   ),
           ),
-          Positioned(
+          Positioned.fill(
             child: GestureDetector(
               onTap: onTap,
             ),
-          )
+          ),
+          Positioned.fill(
+            child: IgnorePointer(
+              child: Center(
+                child: AnimatedBuilder(
+                  animation: _animationController,
+                  builder: (context, child) {
+                    return Transform.scale(
+                      scale: _animationController.value,
+                      child: child,
+                    );
+                  },
+                  child: AnimatedOpacity(
+                    opacity: onPlaying ? 0 : 1,
+                    duration: animationDuration,
+                    child: const FaIcon(
+                      FontAwesomeIcons.play,
+                      color: Colors.white,
+                      size: Sizes.size56,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            left: 10,
+            bottom: 20,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "@kwh9788",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: Sizes.size20,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Gaps.v20,
+                Row(
+                  children: [
+                    Text(
+                      !scriptDetail
+                          ? "${script.substring(0, 24)} ... "
+                          : script,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: Sizes.size16,
+                      ),
+                    ),
+                    if (!scriptDetail)
+                      GestureDetector(
+                        onTap: () {
+                          scriptDetail = true;
+                          setState(() {});
+                        },
+                        child: const Text(
+                          "See more",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: Sizes.size16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            right: 10,
+            bottom: 20,
+            child: Column(
+              children: const [
+                CircleAvatar(
+                  radius: 25,
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  foregroundImage: NetworkImage(
+                      "https://avatars.githubusercontent.com/u/88845841?v=4"),
+                  child: Text("우현"),
+                ),
+                Gaps.v28,
+                UiButton(icon: FontAwesomeIcons.solidHeart, text: "2.9M"),
+                Gaps.v16,
+                UiButton(icon: FontAwesomeIcons.solidComment, text: "33K"),
+                Gaps.v16,
+                UiButton(icon: FontAwesomeIcons.share, text: "Share"),
+                Gaps.v36,
+                CircleAvatar(
+                  radius: 25,
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  foregroundImage: NetworkImage(
+                      "https://avatars.githubusercontent.com/u/88845841?v=4"),
+                  child: Text("우현"),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
