@@ -6,6 +6,8 @@ import 'package:tiktok_clone/screens/features/videos/widgets/ui_button.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import 'video_comments.dart';
+
 class VideoPost extends StatefulWidget {
   final Function onVideoFinished;
   final int index;
@@ -48,7 +50,9 @@ class _VideoPostState extends State<VideoPost>
   }
 
   void _onVisibilityChanged(VisibilityInfo info) {
-    if (info.visibleFraction == 1 && !_videoPlayerController.value.isPlaying) {
+    if (info.visibleFraction == 1 &&
+        onPlaying &&
+        !_videoPlayerController.value.isPlaying) {
       _videoPlayerController.play();
     }
   }
@@ -64,6 +68,18 @@ class _VideoPostState extends State<VideoPost>
       _animationController.forward();
     }
     setState(() {});
+  }
+
+  void onCommentTap(BuildContext context) async {
+    if (_videoPlayerController.value.isPlaying) {
+      onTap();
+    }
+    await showModalBottomSheet(
+      context: context,
+      builder: (context) => const VideoComments(),
+      backgroundColor: Colors.transparent,
+    );
+    onTap();
   }
 
   @override
@@ -181,8 +197,8 @@ class _VideoPostState extends State<VideoPost>
             right: 10,
             bottom: 20,
             child: Column(
-              children: const [
-                CircleAvatar(
+              children: [
+                const CircleAvatar(
                   radius: 25,
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
@@ -191,13 +207,19 @@ class _VideoPostState extends State<VideoPost>
                   child: Text("우현"),
                 ),
                 Gaps.v28,
-                UiButton(icon: FontAwesomeIcons.solidHeart, text: "2.9M"),
+                const UiButton(icon: FontAwesomeIcons.solidHeart, text: "2.9M"),
                 Gaps.v16,
-                UiButton(icon: FontAwesomeIcons.solidComment, text: "33K"),
+                GestureDetector(
+                  onTap: () => onCommentTap(context),
+                  child: const UiButton(
+                    icon: FontAwesomeIcons.solidComment,
+                    text: "33K",
+                  ),
+                ),
                 Gaps.v16,
-                UiButton(icon: FontAwesomeIcons.share, text: "Share"),
+                const UiButton(icon: FontAwesomeIcons.share, text: "Share"),
                 Gaps.v36,
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 25,
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
