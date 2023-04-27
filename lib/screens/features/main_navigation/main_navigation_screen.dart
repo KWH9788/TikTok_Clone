@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/screens/features/discover/discover_screen.dart';
 import 'package:tiktok_clone/screens/features/main_navigation/widgets/nav_tab.dart';
 import 'package:tiktok_clone/screens/features/videos/video_timeline_screen.dart';
 
@@ -13,7 +14,7 @@ class MainNavigationScreen extends StatefulWidget {
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _currentScreen = 0;
+  int _currentScreen = 1;
   final screens = [
     Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -51,12 +52,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           ),
           Offstage(
             offstage: _currentScreen != 1,
-            child: const Center(
-              child: Text(
-                "Discover",
-                style: TextStyle(fontSize: Sizes.size28),
-              ),
-            ),
+            child: const DiscoverScreen(),
           ),
           Offstage(
             offstage: _currentScreen != 3,
@@ -79,7 +75,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         ],
       ),
       bottomNavigationBar: BottomAppBar(
-        color: Colors.black,
+        color: _currentScreen == 0 ? Colors.black : Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(Sizes.size12),
           child: Row(
@@ -92,6 +88,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 icon: FontAwesomeIcons.house,
                 selectedicon: FontAwesomeIcons.house,
                 onTap: () => _onTabTap(0),
+                invert: _currentScreen != 0,
               ),
               NavTab(
                 text: "Discover",
@@ -99,13 +96,14 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 icon: FontAwesomeIcons.compass,
                 selectedicon: FontAwesomeIcons.solidCompass,
                 onTap: () => _onTabTap(1),
+                invert: _currentScreen != 0,
               ),
               Gaps.h12,
               Stack(
                 clipBehavior: Clip.none,
                 children: [
                   Positioned(
-                    left: Sizes.size24,
+                    right: Sizes.size24,
                     child: Container(
                       height: Sizes.size32,
                       width: Sizes.size24,
@@ -116,7 +114,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                     ),
                   ),
                   Positioned(
-                    right: Sizes.size24,
+                    left: Sizes.size24,
                     child: Container(
                       height: Sizes.size32,
                       width: Sizes.size24,
@@ -131,13 +129,15 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                     height: Sizes.size32,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(Sizes.size9),
-                      color: Colors.white,
+                      color: _currentScreen == 0 ? Colors.white : Colors.black,
                     ),
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: Sizes.size12),
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: Sizes.size12),
                       child: FaIcon(
                         FontAwesomeIcons.plus,
-                        color: Colors.black,
+                        color:
+                            _currentScreen == 0 ? Colors.black : Colors.white,
                         size: Sizes.size20,
                       ),
                     ),
@@ -151,6 +151,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 icon: FontAwesomeIcons.message,
                 selectedicon: FontAwesomeIcons.solidMessage,
                 onTap: () => _onTabTap(3),
+                invert: _currentScreen != 0,
               ),
               NavTab(
                 text: "Profile",
@@ -158,6 +159,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 icon: FontAwesomeIcons.user,
                 selectedicon: FontAwesomeIcons.solidUser,
                 onTap: () => _onTabTap(4),
+                invert: _currentScreen != 0,
               ),
             ],
           ),
