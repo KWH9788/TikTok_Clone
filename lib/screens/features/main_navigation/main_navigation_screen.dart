@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/screens/features/discover/discover_screen.dart';
+import 'package:tiktok_clone/screens/features/inbox/inbox_screen.dart';
 import 'package:tiktok_clone/screens/features/main_navigation/widgets/nav_tab.dart';
 import 'package:tiktok_clone/screens/features/videos/video_timeline_screen.dart';
 
@@ -54,15 +55,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             offstage: _currentScreen != 1,
             child: const DiscoverScreen(),
           ),
-          Offstage(
-            offstage: _currentScreen != 3,
-            child: const Center(
-              child: Text(
-                "Inbox",
-                style: TextStyle(fontSize: Sizes.size28),
-              ),
-            ),
-          ),
+          Offstage(offstage: _currentScreen != 3, child: const InboxScreen()),
           Offstage(
             offstage: _currentScreen != 4,
             child: const Center(
