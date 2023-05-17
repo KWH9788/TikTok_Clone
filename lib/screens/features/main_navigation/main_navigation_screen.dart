@@ -5,6 +5,7 @@ import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/screens/features/discover/discover_screen.dart';
 import 'package:tiktok_clone/screens/features/inbox/inbox_screen.dart';
 import 'package:tiktok_clone/screens/features/main_navigation/widgets/nav_tab.dart';
+import 'package:tiktok_clone/screens/features/user/user_profile_screen.dart';
 import 'package:tiktok_clone/screens/features/videos/video_timeline_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
@@ -15,7 +16,7 @@ class MainNavigationScreen extends StatefulWidget {
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _currentScreen = 3;
+  int _currentScreen = 4;
   final screens = [
     Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -44,7 +45,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.black,
+      backgroundColor: _currentScreen == 0 ? Colors.black : Colors.white,
       body: Stack(
         children: [
           Offstage(
@@ -55,15 +56,13 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             offstage: _currentScreen != 1,
             child: const DiscoverScreen(),
           ),
-          Offstage(offstage: _currentScreen != 3, child: const InboxScreen()),
+          Offstage(
+            offstage: _currentScreen != 3,
+            child: const InboxScreen(),
+          ),
           Offstage(
             offstage: _currentScreen != 4,
-            child: const Center(
-              child: Text(
-                "Profile",
-                style: TextStyle(fontSize: Sizes.size28),
-              ),
-            ),
+            child: const UserProfileScreen(),
           ),
         ],
       ),
