@@ -55,9 +55,6 @@ class _VideoPostState extends State<VideoPost>
         !_videoPlayerController.value.isPlaying) {
       _videoPlayerController.play();
     }
-    if (_videoPlayerController.value.isPlaying && info.visibleFraction == 0) {
-      onTap();
-    }
   }
 
   void onTap() {
@@ -104,8 +101,8 @@ class _VideoPostState extends State<VideoPost>
   @override
   void dispose() {
     // TODO: implement dispose
-    super.dispose();
     _videoPlayerController.dispose();
+    super.dispose();
   }
 
   @override
