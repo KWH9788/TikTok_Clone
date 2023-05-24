@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
@@ -30,13 +31,20 @@ class _VideoPostState extends State<VideoPost>
   // 비디오관련
   final Duration animationDuration = const Duration(milliseconds: 300);
   bool onPlaying = true;
-  final VideoPlayerController _videoPlayerController =
-      VideoPlayerController.asset("assets/videos/analysis_options.mp4");
+  bool mute = false;
+  late final VideoPlayerController _videoPlayerController;
   late final AnimationController _animationController;
 
   void _initVideoPlayer() async {
+    _videoPlayerController =
+        VideoPlayerController.asset("assets/videos/analysis_options.mp4");
     await _videoPlayerController.initialize();
     await _videoPlayerController.setLooping(true);
+    if (kIsWeb) {
+      await _videoPlayerController.setVolume(0);
+      mute = true;
+    }
+    _videoPlayerController.addListener(onFinish);
     setState(() {});
   }
 
@@ -87,12 +95,23 @@ class _VideoPostState extends State<VideoPost>
     onTap();
   }
 
+  void onMute() {
+    if (mute == true) {
+      _videoPlayerController.setVolume(1);
+    } else if (mute == false) {
+      _videoPlayerController.setVolume(0);
+    }
+    setState(() {
+      mute = !mute;
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _initVideoPlayer();
-    _videoPlayerController.addListener(onFinish);
+
     _animationController = AnimationController(
       vsync: this,
       lowerBound: 1.0,
@@ -233,6 +252,22 @@ class _VideoPostState extends State<VideoPost>
                   child: Text("우현"),
                 ),
               ],
+            ),
+          ),
+          Positioned(
+            top: Sizes.size40,
+            right: Sizes.size10,
+            child: IconButton(
+              icon: mute
+                  ? const FaIcon(
+                      FontAwesomeIcons.volumeXmark,
+                      color: Colors.white,
+                    )
+                  : const FaIcon(
+                      FontAwesomeIcons.volumeHigh,
+                      color: Colors.white,
+                    ),
+              onPressed: onMute,
             ),
           ),
         ],
