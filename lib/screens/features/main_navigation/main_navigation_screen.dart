@@ -16,7 +16,7 @@ class MainNavigationScreen extends StatefulWidget {
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _currentScreen = 0;
+  int _currentScreen = 1;
   final screens = [
     Column(
       mainAxisAlignment: MainAxisAlignment.center,

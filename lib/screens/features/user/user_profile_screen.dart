@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/screens/features/settings/settings_screen.dart';
@@ -23,6 +24,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return SafeArea(
       child: DefaultTabController(
         length: 2,
@@ -98,76 +100,81 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       ),
                     ),
                     Gaps.v14,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Flexible(
-                          child: FractionallySizedBox(
-                            widthFactor: 1,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: Sizes.size14,
-                              ),
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                borderRadius:
-                                    BorderRadius.circular(Sizes.size2),
-                              ),
-                              child: const Text(
-                                "Follow",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxWidth: Breakpoints.sm,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: FractionallySizedBox(
+                              widthFactor: 1,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: Sizes.size14,
+                                ),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius:
+                                      BorderRadius.circular(Sizes.size2),
+                                ),
+                                child: const Text(
+                                  "Follow",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        Gaps.h6,
-                        Flexible(
-                          child: FractionallySizedBox(
-                            widthFactor: 0.35,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: Sizes.size10,
-                              ),
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.circular(Sizes.size2),
-                                  border: Border.all(
-                                    color: Colors.grey.shade300,
-                                  )),
-                              child: const FaIcon(FontAwesomeIcons.youtube),
-                            ),
-                          ),
-                        ),
-                        Gaps.h4,
-                        Flexible(
-                          child: FractionallySizedBox(
-                            widthFactor: 0.35,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: Sizes.size14,
-                              ),
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.circular(Sizes.size2),
-                                  border: Border.all(
-                                    color: Colors.grey.shade300,
-                                  )),
-                              child: const FaIcon(
-                                FontAwesomeIcons.caretDown,
-                                size: Sizes.size16,
+                          Gaps.h6,
+                          Flexible(
+                            child: FractionallySizedBox(
+                              widthFactor: 0.35,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: Sizes.size10,
+                                ),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius:
+                                        BorderRadius.circular(Sizes.size2),
+                                    border: Border.all(
+                                      color: Colors.grey.shade300,
+                                    )),
+                                child: const FaIcon(FontAwesomeIcons.youtube),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                          Gaps.h4,
+                          Flexible(
+                            child: FractionallySizedBox(
+                              widthFactor: 0.35,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: Sizes.size14,
+                                ),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius:
+                                        BorderRadius.circular(Sizes.size2),
+                                    border: Border.all(
+                                      color: Colors.grey.shade300,
+                                    )),
+                                child: const FaIcon(
+                                  FontAwesomeIcons.caretDown,
+                                  size: Sizes.size16,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     Gaps.v12,
                     const Padding(
@@ -211,8 +218,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   keyboardDismissBehavior:
                       ScrollViewKeyboardDismissBehavior.onDrag,
                   padding: EdgeInsets.zero,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: width > Breakpoints.lg ? 5 : 3,
                     crossAxisSpacing: Sizes.size2,
                     mainAxisSpacing: Sizes.size2,
                     childAspectRatio: 9 / 13,
