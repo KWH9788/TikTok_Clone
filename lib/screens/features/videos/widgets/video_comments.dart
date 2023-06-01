@@ -121,7 +121,7 @@ class _VideoCommentsState extends State<VideoComments> {
                       bottom: Sizes.size28,
                       top: Sizes.size5,
                     ),
-                    color: isDark ? Colors.black : null,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: Sizes.size16,

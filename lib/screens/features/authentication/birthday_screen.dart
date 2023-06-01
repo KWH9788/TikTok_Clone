@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/constants/utils.dart';
 import 'package:tiktok_clone/screens/features/authentication/widgets/form_button.dart';
 import 'package:tiktok_clone/screens/features/onboarding/interests_screen.dart';
 
@@ -160,8 +159,8 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        color: isDarkMode(context) ? Colors.black : null,
+      bottomNavigationBar: Container(
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: SizedBox(
           height: 300,
           child: CupertinoDatePicker(
