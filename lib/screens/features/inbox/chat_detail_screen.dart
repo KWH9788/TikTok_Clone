@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/constants/utils.dart';
 
 class ChatDetailScreen extends StatefulWidget {
   const ChatDetailScreen({super.key});
@@ -35,7 +36,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.grey.shade100,
+        backgroundColor: isDarkMode(context) ? null : Colors.grey.shade100,
         title: ListTile(
           contentPadding: EdgeInsets.zero,
           horizontalTitleGap: Sizes.size10,
@@ -74,32 +75,35 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          subtitle: const Text(
-            "Active now",
-            style: TextStyle(
-              color: Colors.black38,
-              fontWeight: FontWeight.w300,
+          subtitle: const Opacity(
+            opacity: 0.8,
+            child: Text(
+              "Active now",
+              style: TextStyle(
+                fontWeight: FontWeight.w300,
+              ),
             ),
           ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
-            children: const [
+            children: [
               FaIcon(
                 FontAwesomeIcons.flag,
-                color: Colors.black,
+                color: isDarkMode(context) ? Colors.white : Colors.black,
                 size: Sizes.size20,
               ),
               Gaps.h24,
               FaIcon(
                 FontAwesomeIcons.ellipsis,
-                color: Colors.black,
+                color: isDarkMode(context) ? Colors.white : Colors.black,
                 size: Sizes.size20,
               ),
             ],
           ),
         ),
       ),
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor:
+          isDarkMode(context) ? Colors.grey.shade900 : Colors.grey.shade100,
       body: Stack(
         children: [
           ListView.separated(
@@ -145,10 +149,16 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
           Positioned(
             bottom: 0,
             width: MediaQuery.of(context).size.width,
-            child: BottomAppBar(
-              elevation: 0,
-              color: Colors.grey.shade100,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Container(
+              color: isDarkMode(context)
+                  ? Colors.grey.shade900
+                  : Colors.grey.shade100,
+              padding: const EdgeInsets.only(
+                left: Sizes.size10,
+                right: Sizes.size10,
+                top: Sizes.size10,
+                bottom: Sizes.size28,
+              ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   vertical: Sizes.size16,
@@ -163,7 +173,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                             right: 0,
                             bottom: 0,
                             child: CustomPaint(
-                              painter: ChatBubbleTriangle(),
+                              painter: isDarkMode(context)
+                                  ? DarkModeChatBubbleTriangle()
+                                  : ChatBubbleTriangle(),
                             ),
                           ),
                           TextField(
@@ -185,14 +197,18 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                               ),
                               hintText: "Send a message...",
                               filled: true,
-                              fillColor: Colors.white,
+                              fillColor: isDarkMode(context)
+                                  ? Colors.black
+                                  : Colors.white,
                               suffixIcon: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
+                                children: [
                                   FaIcon(
                                     FontAwesomeIcons.faceLaugh,
-                                    color: Colors.black,
+                                    color: isDarkMode(context)
+                                        ? Colors.white
+                                        : Colors.black,
                                   ),
                                 ],
                               ),
@@ -207,7 +223,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                         shape: BoxShape.circle,
                         color: _textEditingController.text.isNotEmpty
                             ? Theme.of(context).primaryColor
-                            : Colors.grey.shade300,
+                            : isDarkMode(context)
+                                ? Colors.grey.shade800
+                                : Colors.grey.shade300,
                       ),
                       child: const Center(
                         child: Padding(
@@ -235,6 +253,24 @@ class ChatBubbleTriangle extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()..color = Colors.white;
+
+    var path = Path();
+    path.lineTo(-10, 0);
+    path.lineTo(0, -15);
+    path.lineTo(10, 0);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+class DarkModeChatBubbleTriangle extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    var paint = Paint()..color = Colors.black;
 
     var path = Path();
     path.lineTo(-10, 0);

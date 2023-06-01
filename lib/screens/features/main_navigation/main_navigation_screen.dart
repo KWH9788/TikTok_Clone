@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/constants/utils.dart';
 import 'package:tiktok_clone/screens/features/discover/discover_screen.dart';
 import 'package:tiktok_clone/screens/features/inbox/inbox_screen.dart';
 import 'package:tiktok_clone/screens/features/main_navigation/widgets/nav_tab.dart';
@@ -43,9 +44,11 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = isDarkMode(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: _currentScreen == 0 ? Colors.black : Colors.white,
+      backgroundColor:
+          _currentScreen == 0 || isDark ? Colors.black : Colors.white,
       body: Stack(
         children: [
           Offstage(
@@ -66,8 +69,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomAppBar(
-        color: _currentScreen == 0 ? Colors.black : Colors.white,
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.only(bottom: Sizes.size24),
+        color: _currentScreen == 0 || isDark ? Colors.black : Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(Sizes.size12),
           child: Row(
@@ -121,15 +125,18 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                     height: Sizes.size32,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(Sizes.size9),
-                      color: _currentScreen == 0 ? Colors.white : Colors.black,
+                      color: _currentScreen == 0 || isDark
+                          ? Colors.white
+                          : Colors.black,
                     ),
                     child: Padding(
                       padding:
                           const EdgeInsets.symmetric(horizontal: Sizes.size12),
                       child: FaIcon(
                         FontAwesomeIcons.plus,
-                        color:
-                            _currentScreen == 0 ? Colors.black : Colors.white,
+                        color: _currentScreen == 0 || isDark
+                            ? Colors.black
+                            : Colors.white,
                         size: Sizes.size20,
                       ),
                     ),

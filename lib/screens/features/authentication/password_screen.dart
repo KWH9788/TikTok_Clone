@@ -125,7 +125,6 @@ class _PasswordScreenState extends State<PasswordScreen> {
               style: TextStyle(
                 fontSize: Sizes.size20,
                 fontWeight: FontWeight.w600,
-                color: Colors.black,
               ),
             ),
             Gaps.v28,

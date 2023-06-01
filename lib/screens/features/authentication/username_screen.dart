@@ -76,13 +76,14 @@ class _UsernameScreenState extends State<UsernameScreen> {
               style: TextStyle(
                 fontSize: Sizes.size20,
                 fontWeight: FontWeight.w600,
-                color: Colors.black,
               ),
             ),
             Gaps.v14,
-            const Text(
-              "You can always change this later.",
-              style: TextStyle(color: Colors.black45),
+            const Opacity(
+              opacity: 0.5,
+              child: Text(
+                "You can always change this later.",
+              ),
             ),
             Gaps.v28,
             // Username 입력창

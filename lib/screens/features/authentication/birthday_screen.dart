@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/constants/utils.dart';
 import 'package:tiktok_clone/screens/features/authentication/widgets/form_button.dart';
 import 'package:tiktok_clone/screens/features/onboarding/interests_screen.dart';
 
@@ -98,7 +99,8 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            Stack(
+              clipBehavior: Clip.none,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,19 +108,30 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
                     Text(
                       "When's your birthday?",
                       style: TextStyle(
-                        fontSize: Sizes.size20,
+                        fontSize: Sizes.size24,
                         fontWeight: FontWeight.w600,
-                        color: Colors.black,
                       ),
                     ),
                     Gaps.v14,
-                    Text(
-                      "Your birthday won't be shown publicly.",
-                      style: TextStyle(color: Colors.black45),
+                    Opacity(
+                      opacity: 0.75,
+                      child: Text(
+                        "Your birthday won't be shown publicly.",
+                        style: TextStyle(
+                          fontSize: Sizes.size14,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                const FaIcon(FontAwesomeIcons.cakeCandles),
+                const Positioned(
+                  top: 10,
+                  right: -100,
+                  child: FaIcon(
+                    FontAwesomeIcons.cakeCandles,
+                    size: Sizes.size64,
+                  ),
+                ),
               ],
             ),
             Gaps.v28,
@@ -148,6 +161,7 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
+        color: isDarkMode(context) ? Colors.black : null,
         child: SizedBox(
           height: 300,
           child: CupertinoDatePicker(

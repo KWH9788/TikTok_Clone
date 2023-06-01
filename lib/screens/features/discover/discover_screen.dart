@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/constants/utils.dart';
 
 final List<String> taps = [
   "Top",
@@ -69,6 +70,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
+          backgroundColor: isDarkMode(context) ? Colors.black : null,
           elevation: 1,
           title: Container(
             constraints: const BoxConstraints(
@@ -88,10 +90,12 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                 ),
                 prefixIcon: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     FaIcon(
                       FontAwesomeIcons.magnifyingGlass,
-                      color: Colors.black,
+                      color: isDarkMode(context)
+                          ? Colors.grey.shade50
+                          : Colors.black,
                     ),
                   ],
                 ),
@@ -108,8 +112,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                         FontAwesomeIcons.solidCircleXmark,
                         size: Sizes.size20,
                         color: searchFormEmpty
-                            ? Colors.grey.shade100
-                            : Colors.grey.shade600,
+                            ? Colors.transparent
+                            : isDarkMode(context)
+                                ? Colors.grey.shade50
+                                : Colors.grey.shade600,
                       ),
                     ),
                   ],
@@ -119,7 +125,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: Colors.grey.shade100,
+                fillColor: isDarkMode(context)
+                    ? Colors.grey.shade900
+                    : Colors.grey.shade100,
               ),
             ),
           ),
@@ -131,8 +139,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               for (var tap in taps) Text(tap),
             ],
             isScrollable: true,
-            labelColor: Colors.black,
-            unselectedLabelColor: Colors.grey.shade500,
             labelStyle: const TextStyle(
               fontSize: Sizes.size20,
               fontWeight: FontWeight.w600,
@@ -141,8 +147,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               vertical: Sizes.size12,
               horizontal: Sizes.size12,
             ),
-            indicatorColor: Colors.black,
             splashFactory: NoSplash.splashFactory,
+            indicatorColor: Theme.of(context).tabBarTheme.indicatorColor,
             onTap: (value) => FocusScope.of(context).unfocus(),
           ),
         ),
@@ -185,6 +191,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       style: TextStyle(
                         fontSize: Sizes.size16,
                         fontWeight: FontWeight.w600,
+                        height: 1.1,
                       ),
                     ),
                     Gaps.v6,
@@ -192,7 +199,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       style: TextStyle(
                         fontSize: Sizes.size14,
                         fontWeight: FontWeight.w600,
-                        color: Colors.grey.shade600,
+                        color: isDarkMode(context)
+                            ? Colors.grey.shade300
+                            : Colors.grey.shade600,
                       ),
                       child: Row(
                         children: [

@@ -94,7 +94,6 @@ class _EmailScreenState extends State<EmailScreen> {
                 style: TextStyle(
                   fontSize: Sizes.size20,
                   fontWeight: FontWeight.w600,
-                  color: Colors.black,
                 ),
               ),
               Gaps.v28,
