@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/screens/features/authentication/email_screen.dart';
+import 'package:tiktok_clone/screens/features/authentication/log_in_screen.dart';
 import 'package:tiktok_clone/screens/features/authentication/sign_up_screen.dart';
+import 'package:tiktok_clone/screens/features/authentication/username_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -94,7 +97,13 @@ class TiktokCloneApp extends StatelessWidget {
           iconColor: Colors.grey.shade100,
         ),
       ),
-      home: const SignUpScreen(),
+      initialRoute: SignUpScreen.routeName,
+      routes: {
+        SignUpScreen.routeName: (context) => const SignUpScreen(),
+        UsernameScreen.routeName: (context) => const UsernameScreen(),
+        LogInScreen.routeName: (context) => const LogInScreen(),
+        EmailScreen.routeName: (context) => const EmailScreen(),
+      },
     );
   }
 }
