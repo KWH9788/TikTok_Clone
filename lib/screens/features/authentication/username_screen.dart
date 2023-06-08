@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/screens/features/authentication/email_screen.dart';
 import 'package:tiktok_clone/screens/features/authentication/widgets/form_button.dart';
 
 class UsernameScreen extends StatefulWidget {
-  static String routeName = "/username";
+  static String routeUrl = "username";
+  static String routeName = "username";
   const UsernameScreen({super.key});
 
   @override
@@ -38,10 +40,8 @@ class _UsernameScreenState extends State<UsernameScreen> {
     // 유효성 검사
     if (username.isEmpty) return;
 
-    Navigator.of(context).pushNamed(
-      EmailScreen.routeName,
-      arguments: EmailScreenArgs(username: username),
-    );
+    context.pushNamed(EmailScreen.routeName,
+        extra: EmailScreenArgs(username: username));
   }
 
   @override

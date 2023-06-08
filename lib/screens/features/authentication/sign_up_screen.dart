@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/constants/utils.dart';
@@ -8,15 +9,12 @@ import 'package:tiktok_clone/screens/features/authentication/username_screen.dar
 import 'package:tiktok_clone/screens/features/authentication/widgets/auth_button.dart';
 
 class SignUpScreen extends StatelessWidget {
-  static String routeName = "/";
+  static String routeName = "signup";
+  static String routeUrl = "/";
   const SignUpScreen({super.key});
 
   void onLoginTap(BuildContext context) async {
-    final result = await Navigator.of(context).pushNamed(
-      LogInScreen.routeName,
-    );
-    print(result);
-    print("User came back!");
+    context.push(LogInScreen.routeName);
   }
 
   void onEmailTap(BuildContext context) {
@@ -39,9 +37,7 @@ class SignUpScreen extends StatelessWidget {
       pageBuilder: (context, animation, secondaryAnimation) =>
           const UsernameScreen(),
     )); */
-    Navigator.of(context).pushNamed(
-      UsernameScreen.routeName,
-    );
+    context.pushNamed(UsernameScreen.routeName);
   }
 
   @override

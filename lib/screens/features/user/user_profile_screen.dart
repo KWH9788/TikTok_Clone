@@ -7,7 +7,13 @@ import 'package:tiktok_clone/screens/features/settings/settings_screen.dart';
 import 'package:tiktok_clone/screens/features/user/widgets/persistent_tab_bar.dart';
 
 class UserProfileScreen extends StatefulWidget {
-  const UserProfileScreen({super.key});
+  final username;
+  final tab;
+  const UserProfileScreen({
+    super.key,
+    required this.username,
+    required this.tab,
+  });
 
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
@@ -29,12 +35,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       body: SafeArea(
         child: DefaultTabController(
+          initialIndex: widget.tab == "likes" ? 1 : 0,
           length: 2,
           child: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
                 SliverAppBar(
-                  title: const Text("KWH9788"),
+                  title: Text(widget.username),
                   actions: [
                     IconButton(
                       onPressed: _onTapSettings,
@@ -48,21 +55,21 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 SliverToBoxAdapter(
                   child: Column(
                     children: [
-                      const CircleAvatar(
+                      CircleAvatar(
                         radius: 45,
                         foregroundColor: Colors.blue,
-                        foregroundImage: NetworkImage(
+                        foregroundImage: const NetworkImage(
                           'https://avatars.githubusercontent.com/u/88845841',
                         ),
-                        child: Text("우현"),
+                        child: Text(widget.username),
                       ),
                       Gaps.v14,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            "@kwh9788",
-                            style: TextStyle(
+                          Text(
+                            "@${widget.username}",
+                            style: const TextStyle(
                               fontSize: Sizes.size16,
                               fontWeight: FontWeight.w600,
                             ),

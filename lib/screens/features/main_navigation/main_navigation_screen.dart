@@ -65,7 +65,10 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           ),
           Offstage(
             offstage: _currentScreen != 4,
-            child: const UserProfileScreen(),
+            child: const UserProfileScreen(
+              username: "KWH9788",
+              tab: "",
+            ),
           ),
         ],
       ),
