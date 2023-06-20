@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,10 +16,11 @@ class VideoRecordingScreen extends StatefulWidget {
 }
 
 class _VideoRecordingScreenState extends State<VideoRecordingScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   bool _hasPermission = false;
   bool _isPermanentlyDenied = false;
   bool _isSelfieMode = false;
+  bool _isInactive = false;
 
   late CameraController _cameraController;
   late FlashMode _isFlashMode;
@@ -39,7 +41,7 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
     upperBound: 1.0,
   );
 
-  Future<void> _startRecording(TapDownDetails _) async {
+  Future<void> _startRecording(LongPressDownDetails _) async {
     if (_cameraController.value.isRecordingVideo) {
       return;
     }
@@ -69,6 +71,19 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
         ),
       ),
     );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!_hasPermission) return;
+    if (!_cameraController.value.isInitialized) return;
+    if (state == AppLifecycleState.inactive) {
+      _isInactive = true;
+      _cameraController.dispose();
+    } else if (state == AppLifecycleState.resumed) {
+      _isInactive = false;
+      initCamera();
+    }
   }
 
   void toggleSelfieMode() async {
@@ -115,6 +130,8 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
     await _cameraController.prepareForVideoRecording();
 
     _isFlashMode = _cameraController.value.flashMode;
+
+    setState(() {});
   }
 
   Future<void> initPermissions() async {
@@ -141,6 +158,7 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
     // TODO: implement initState
     super.initState();
     initPermissions();
+    WidgetsBinding.instance.addObserver(this);
     _progressAnimationController.addListener(() {
       setState(() {});
     });
@@ -153,11 +171,10 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
 
   @override
   void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    _cameraController.dispose();
-    _buttonAnimationController.dispose();
     _progressAnimationController.dispose();
+    _buttonAnimationController.dispose();
+    _cameraController.dispose();
+    super.dispose();
   }
 
   @override
@@ -200,7 +217,8 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
               : Stack(
                   alignment: Alignment.topCenter,
                   children: [
-                    CameraPreview(_cameraController),
+                    if (_cameraController.value.isInitialized && !_isInactive)
+                      CameraPreview(_cameraController),
                     Positioned(
                       top: Sizes.size20,
                       right: Sizes.size20,
@@ -234,14 +252,14 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
                       ),
                     ),
                     Positioned(
-                      bottom: 0,
+                      bottom: Sizes.size40,
                       width: MediaQuery.of(context).size.width,
                       child: Row(
                         children: [
                           const Spacer(),
                           GestureDetector(
-                            onTapDown: _startRecording,
-                            onTapUp: (details) => _stopRecording(),
+                            onLongPressUp: _stopRecording,
+                            onLongPressDown: _startRecording,
                             child: ScaleTransition(
                               scale: _buttonAnimation,
                               child: Stack(
