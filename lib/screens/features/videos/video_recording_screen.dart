@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,6 +12,8 @@ import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/screens/features/videos/video_preview.screen.dart';
 
 class VideoRecordingScreen extends StatefulWidget {
+  static const String routeName = "post";
+  static const String routeUrl = "/upload";
   const VideoRecordingScreen({super.key});
 
   @override
@@ -22,8 +27,12 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
   bool _isSelfieMode = false;
   bool _isInactive = false;
 
+  late final bool _noCamera = kDebugMode && Platform.isIOS;
+
   late CameraController _cameraController;
   late FlashMode _isFlashMode;
+  late double _maxZoom;
+  double zoom = 1;
 
   late final AnimationController _buttonAnimationController =
       AnimationController(
@@ -73,8 +82,23 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
     );
   }
 
+  Future<void> _zoomCamera(LongPressMoveUpdateDetails details) async {
+    if (!_cameraController.value.isInitialized) return;
+    if (details.offsetFromOrigin.dy * -1 < 0) {
+      zoom = 1.0;
+    } else {
+      zoom = 1.0 + (0.035 * details.offsetFromOrigin.dy.ceil().abs());
+    }
+    if (zoom > _maxZoom) {
+      zoom = _maxZoom;
+    }
+    print(zoom);
+    await _cameraController.setZoomLevel(zoom);
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (_noCamera) return;
     if (!_hasPermission) return;
     if (!_cameraController.value.isInitialized) return;
     if (state == AppLifecycleState.inactive) {
@@ -131,6 +155,8 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
 
     _isFlashMode = _cameraController.value.flashMode;
 
+    _maxZoom = await _cameraController.getMaxZoomLevel();
+
     setState(() {});
   }
 
@@ -157,7 +183,13 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
   void initState() {
     // TODO: implement initState
     super.initState();
-    initPermissions();
+    if (!_noCamera) {
+      initPermissions();
+    } else {
+      setState(() {
+        _hasPermission = true;
+      });
+    }
     WidgetsBinding.instance.addObserver(this);
     _progressAnimationController.addListener(() {
       setState(() {});
@@ -173,7 +205,9 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
   void dispose() {
     _progressAnimationController.dispose();
     _buttonAnimationController.dispose();
-    _cameraController.dispose();
+    if (!_noCamera) {
+      _cameraController.dispose();
+    }
     super.dispose();
   }
 
@@ -184,7 +218,7 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          child: !_hasPermission || !_cameraController.value.isInitialized
+          child: !_hasPermission
               ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -217,47 +251,69 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
               : Stack(
                   alignment: Alignment.topCenter,
                   children: [
-                    if (_cameraController.value.isInitialized && !_isInactive)
-                      CameraPreview(_cameraController),
-                    Positioned(
+                    if (!_noCamera)
+                      if (_cameraController.value.isInitialized && !_isInactive)
+                        CameraPreview(_cameraController),
+                    const Positioned(
                       top: Sizes.size20,
-                      right: Sizes.size20,
-                      child: Column(
-                        children: [
-                          IconButton(
-                            onPressed: toggleSelfieMode,
-                            icon: const Icon(Icons.cameraswitch),
-                          ),
-                          Gaps.v10,
-                          flashButton(
-                            FlashMode.off,
-                            Icons.flash_off,
-                          ),
-                          Gaps.v10,
-                          flashButton(
-                            FlashMode.always,
-                            Icons.flash_on,
-                          ),
-                          Gaps.v10,
-                          flashButton(
-                            FlashMode.auto,
-                            Icons.flash_auto,
-                          ),
-                          Gaps.v10,
-                          flashButton(
-                            FlashMode.torch,
-                            Icons.flashlight_on,
-                          ),
-                        ],
+                      left: Sizes.size20,
+                      child: CloseButton(
+                        color: Colors.white,
                       ),
                     ),
+                    if (!_noCamera)
+                      if (_cameraController.value.isInitialized && !_isInactive)
+                        Positioned(
+                          top: Sizes.size20,
+                          right: Sizes.size20,
+                          child: Column(
+                            children: [
+                              IconButton(
+                                onPressed: toggleSelfieMode,
+                                icon: const Icon(Icons.cameraswitch),
+                              ),
+                              Gaps.v10,
+                              flashButton(
+                                FlashMode.off,
+                                Icons.flash_off,
+                              ),
+                              Gaps.v10,
+                              flashButton(
+                                FlashMode.always,
+                                Icons.flash_on,
+                              ),
+                              Gaps.v10,
+                              flashButton(
+                                FlashMode.auto,
+                                Icons.flash_auto,
+                              ),
+                              Gaps.v10,
+                              flashButton(
+                                FlashMode.torch,
+                                Icons.flashlight_on,
+                              ),
+                            ],
+                          ),
+                        ),
                     Positioned(
                       bottom: Sizes.size40,
                       width: MediaQuery.of(context).size.width,
                       child: Row(
                         children: [
-                          const Spacer(),
+                          Expanded(
+                            child: IconButton(
+                              onPressed: () {
+                                _cameraController.setZoomLevel(1);
+                              },
+                              icon: const Icon(
+                                Icons.zoom_out,
+                                color: Colors.white,
+                                size: Sizes.size28,
+                              ),
+                            ),
+                          ),
                           GestureDetector(
+                            onLongPressMoveUpdate: _zoomCamera,
                             onLongPressUp: _stopRecording,
                             onLongPressDown: _startRecording,
                             child: ScaleTransition(
