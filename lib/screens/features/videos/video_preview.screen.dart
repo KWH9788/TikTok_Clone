@@ -43,6 +43,12 @@ class _VideoPreviewScreenState extends State<VideoPreviewScreen> {
     initVideo();
   }
 
+  @override
+  void dispose() {
+    _videoPlayerController.dispose();
+    super.dispose();
+  }
+
   Future<void> _saveToGallery() async {
     if (_savedVideo) return;
     await GallerySaver.saveVideo(

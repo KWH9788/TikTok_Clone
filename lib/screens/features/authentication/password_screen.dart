@@ -85,10 +85,11 @@ class _PasswordScreenState extends State<PasswordScreen> {
   void _onSubmit() {
     if (_isPasswordValied()) return;
     Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const BirthdayScreen(),
-        ));
+      context,
+      MaterialPageRoute(
+        builder: (context) => const BirthdayScreen(),
+      ),
+    );
   }
 
   @override

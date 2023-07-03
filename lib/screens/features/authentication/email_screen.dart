@@ -10,8 +10,6 @@ class EmailScreenArgs {
 }
 
 class EmailScreen extends StatefulWidget {
-  static String routeName = "email";
-  static String routeUrl = "email";
   final username;
   const EmailScreen({
     super.key,
@@ -63,10 +61,11 @@ class _EmailScreenState extends State<EmailScreen> {
   void _onSubmit() {
     if (email.isEmpty || _isEmailValid() != null) return;
     Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const PasswordScreen(),
-        ));
+      context,
+      MaterialPageRoute(
+        builder: (context) => const PasswordScreen(),
+      ),
+    );
   }
 
   @override

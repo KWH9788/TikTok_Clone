@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tiktok_clone/common/widgets/video_config/video_config.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
@@ -33,6 +34,7 @@ class _VideoPostState extends State<VideoPost>
   final Duration animationDuration = const Duration(milliseconds: 300);
   bool onPlaying = true;
   bool mute = false;
+  bool autoMute = videoConfig.value;
   late final VideoPlayerController _videoPlayerController;
   late final AnimationController _animationController;
 
@@ -121,6 +123,12 @@ class _VideoPostState extends State<VideoPost>
       duration: animationDuration,
     );
     if (script.length > 25) scriptDetail = false;
+
+    videoConfig.addListener(() {
+      setState(() {
+        autoMute = videoConfig.value;
+      });
+    });
   }
 
   @override
@@ -171,6 +179,21 @@ class _VideoPostState extends State<VideoPost>
                   ),
                 ),
               ),
+            ),
+          ),
+          Positioned(
+            top: Sizes.size40,
+            right: Sizes.size20,
+            child: IconButton(
+              icon: FaIcon(
+                autoMute
+                    ? FontAwesomeIcons.volumeOff
+                    : FontAwesomeIcons.volumeHigh,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                videoConfig.value = !videoConfig.value;
+              },
             ),
           ),
           Positioned(
@@ -254,22 +277,6 @@ class _VideoPostState extends State<VideoPost>
                   child: Text("우현"),
                 ),
               ],
-            ),
-          ),
-          Positioned(
-            top: Sizes.size40,
-            right: Sizes.size10,
-            child: IconButton(
-              icon: mute
-                  ? const FaIcon(
-                      FontAwesomeIcons.volumeXmark,
-                      color: Colors.white,
-                    )
-                  : const FaIcon(
-                      FontAwesomeIcons.volumeHigh,
-                      color: Colors.white,
-                    ),
-              onPressed: onMute,
             ),
           ),
         ],

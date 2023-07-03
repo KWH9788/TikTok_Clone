@@ -1,23 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tiktok_clone/common/widgets/main_navigation/widgets/post_video_button.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/constants/utils.dart';
 import 'package:tiktok_clone/screens/features/discover/discover_screen.dart';
 import 'package:tiktok_clone/screens/features/inbox/inbox_screen.dart';
-import 'package:tiktok_clone/screens/features/main_navigation/widgets/nav_tab.dart';
+import 'package:tiktok_clone/common/widgets/main_navigation/widgets/nav_tab.dart';
 import 'package:tiktok_clone/screens/features/user/user_profile_screen.dart';
+import 'package:tiktok_clone/screens/features/videos/video_recording_screen.dart';
 import 'package:tiktok_clone/screens/features/videos/video_timeline_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
-  const MainNavigationScreen({super.key});
+  static const String routeName = "mainNavigation";
+  String tab;
+  MainNavigationScreen({
+    super.key,
+    required this.tab,
+  });
 
   @override
   State<MainNavigationScreen> createState() => _MainNavigationScreenState();
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _currentScreen = 1;
+  final List<String> _tabs = [
+    "home",
+    "discover",
+    "post",
+    "inbox",
+    "profile",
+  ];
+
+  late int _currentScreen = _tabs.indexOf(widget.tab);
+
   final screens = [
     Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -36,10 +53,15 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   ];
 
   _onTabTap(int index) {
+    context.go("/${_tabs[index]}");
     setState(() {
       _currentScreen = index;
     });
     print(_currentScreen);
+  }
+
+  _onPostTap() {
+    context.pushNamed(VideoRecordingScreen.routeName);
   }
 
   @override
@@ -98,53 +120,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 invert: _currentScreen != 0,
               ),
               Gaps.h12,
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Positioned(
-                    right: Sizes.size24,
-                    child: Container(
-                      height: Sizes.size32,
-                      width: Sizes.size24,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(Sizes.size9),
-                        color: const Color(0xff61D4F0),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    left: Sizes.size24,
-                    child: Container(
-                      height: Sizes.size32,
-                      width: Sizes.size24,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(Sizes.size9),
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    height: Sizes.size32,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(Sizes.size9),
-                      color: _currentScreen == 0 || isDark
-                          ? Colors.white
-                          : Colors.black,
-                    ),
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: Sizes.size12),
-                      child: FaIcon(
-                        FontAwesomeIcons.plus,
-                        color: _currentScreen == 0 || isDark
-                            ? Colors.black
-                            : Colors.white,
-                        size: Sizes.size20,
-                      ),
-                    ),
-                  ),
-                ],
+              GestureDetector(
+                onTap: _onPostTap,
+                child: PostVideoButton(inverted: isDark),
               ),
               Gaps.h12,
               NavTab(
