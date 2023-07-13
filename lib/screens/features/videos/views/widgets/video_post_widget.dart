@@ -1,18 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
-import 'package:tiktok_clone/common/widgets/video_config/video_config.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/screens/features/videos/view_models/playback_config_vm.dart';
 import 'package:tiktok_clone/screens/features/videos/views/widgets/ui_button.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import 'video_comments.dart';
 
-class VideoPost extends StatefulWidget {
+class VideoPost extends ConsumerStatefulWidget {
   final Function onVideoFinished;
   final int index;
   const VideoPost({
@@ -22,10 +22,10 @@ class VideoPost extends StatefulWidget {
   });
 
   @override
-  State<VideoPost> createState() => _VideoPostState();
+  VideoPostState createState() => VideoPostState();
 }
 
-class _VideoPostState extends State<VideoPost>
+class VideoPostState extends ConsumerState<VideoPost>
     with SingleTickerProviderStateMixin {
   // UI관련
   String script = "This is sample video, testing video player";
@@ -34,10 +34,12 @@ class _VideoPostState extends State<VideoPost>
   // 비디오관련
   final Duration animationDuration = const Duration(milliseconds: 300);
   bool onPlaying = true;
-  bool mute = false;
+  late bool isMuted = ref.read(playbackConfigProvider).muted;
+
   late final VideoPlayerController _videoPlayerController;
   late final AnimationController _animationController;
 
+  // 비디오 불러오기
   void _initVideoPlayer() async {
     _videoPlayerController =
         VideoPlayerController.asset("assets/videos/analysis_options.mp4");
@@ -45,7 +47,6 @@ class _VideoPostState extends State<VideoPost>
     await _videoPlayerController.setLooping(true);
     if (kIsWeb) {
       await _videoPlayerController.setVolume(0);
-      mute = true;
     }
     _videoPlayerController.addListener(onFinish);
     setState(() {});
@@ -60,18 +61,22 @@ class _VideoPostState extends State<VideoPost>
     }
   }
 
+  // 비디오가 화면에 완전히 보일 때 재생
   void _onVisibilityChanged(VisibilityInfo info) {
     if (!mounted) return;
     if (info.visibleFraction == 1 &&
         onPlaying &&
         !_videoPlayerController.value.isPlaying) {
-      _videoPlayerController.play();
+      if (ref.read(playbackConfigProvider).autoplay) {
+        _videoPlayerController.play();
+      }
     }
     if (_videoPlayerController.value.isPlaying && info.visibleFraction == 0) {
       onTap();
     }
   }
 
+  // 재생 / 일시정지
   void onTap() {
     if (_videoPlayerController.value.isPlaying) {
       _videoPlayerController.pause();
@@ -85,6 +90,7 @@ class _VideoPostState extends State<VideoPost>
     setState(() {});
   }
 
+  // 댓글창
   void onCommentTap(BuildContext context) async {
     if (_videoPlayerController.value.isPlaying) {
       onTap();
@@ -99,20 +105,20 @@ class _VideoPostState extends State<VideoPost>
     onTap();
   }
 
-  void onMute() {
-    if (mute == true) {
-      _videoPlayerController.setVolume(1);
-    } else if (mute == false) {
+  // 음소거 토글
+  void _onToggleMuted() {
+    if (!mounted) return;
+    isMuted = !isMuted;
+    ref.read(playbackConfigProvider.notifier).setMuted(isMuted);
+    if (ref.read(playbackConfigProvider).muted) {
       _videoPlayerController.setVolume(0);
+    } else {
+      _videoPlayerController.setVolume(1);
     }
-    setState(() {
-      mute = !mute;
-    });
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _initVideoPlayer();
 
@@ -127,7 +133,6 @@ class _VideoPostState extends State<VideoPost>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _videoPlayerController.dispose();
     super.dispose();
   }
@@ -180,14 +185,12 @@ class _VideoPostState extends State<VideoPost>
             right: Sizes.size20,
             child: IconButton(
               icon: FaIcon(
-                context.watch<VideoConfig>().autoMute
+                ref.watch(playbackConfigProvider).muted
                     ? FontAwesomeIcons.volumeOff
                     : FontAwesomeIcons.volumeHigh,
                 color: Colors.white,
               ),
-              onPressed: () {
-                context.read<VideoConfig>().toggleAutoMute();
-              },
+              onPressed: _onToggleMuted,
             ),
           ),
           Positioned(

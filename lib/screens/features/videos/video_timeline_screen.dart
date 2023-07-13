@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tiktok_clone/screens/features/videos/view_models/timeline_view_model.dart';
 import 'package:tiktok_clone/screens/features/videos/views/widgets/video_post_widget.dart';
 
-class VideoTimelineScreen extends StatefulWidget {
+class VideoTimelineScreen extends ConsumerStatefulWidget {
   const VideoTimelineScreen({super.key});
 
   @override
-  State<VideoTimelineScreen> createState() => _VideoTimelineScreenState();
+  VideoTimelineScreenState createState() => VideoTimelineScreenState();
 }
 
-class _VideoTimelineScreenState extends State<VideoTimelineScreen> {
+class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
   final Duration animatedDuration = const Duration(milliseconds: 300);
   final Curve pageCurvers = Curves.linear;
   final PageController _pageController = PageController();
@@ -44,23 +46,31 @@ class _VideoTimelineScreenState extends State<VideoTimelineScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () => Future.delayed(const Duration(seconds: 2)),
-      displacement: 50,
-      edgeOffset: 20,
-      color: Theme.of(context).primaryColor,
-      child: PageView.builder(
-        controller: _pageController,
-        scrollDirection: Axis.vertical,
-        itemCount: _itemCount,
-        onPageChanged: onPageChanged,
-        itemBuilder: (context, index) {
-          return VideoPost(
-            onVideoFinished: onVideoFinished,
-            index: index,
-          );
-        },
-      ),
-    );
+    return ref.watch(timelineProvider).when(
+          loading: () => const Center(
+            child: CircularProgressIndicator(),
+          ),
+          error: (error, stackTrace) => Center(
+            child: Text("Could not load videos: $error"),
+          ),
+          data: (videos) => RefreshIndicator(
+            onRefresh: () => Future.delayed(const Duration(seconds: 2)),
+            displacement: 50,
+            edgeOffset: 20,
+            color: Theme.of(context).primaryColor,
+            child: PageView.builder(
+              controller: _pageController,
+              scrollDirection: Axis.vertical,
+              itemCount: videos.length,
+              onPageChanged: onPageChanged,
+              itemBuilder: (context, index) {
+                return VideoPost(
+                  onVideoFinished: onVideoFinished,
+                  index: index,
+                );
+              },
+            ),
+          ),
+        );
   }
 }
