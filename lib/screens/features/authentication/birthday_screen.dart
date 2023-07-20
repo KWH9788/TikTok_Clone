@@ -1,20 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/screens/features/authentication/view_models/signup_view_model.dart';
 import 'package:tiktok_clone/screens/features/authentication/widgets/form_button.dart';
-import 'package:tiktok_clone/screens/features/onboarding/interests_screen.dart';
 
-class BirthdayScreen extends StatefulWidget {
+class BirthdayScreen extends ConsumerStatefulWidget {
   const BirthdayScreen({super.key});
 
   @override
-  State<BirthdayScreen> createState() => _BirthdayScreenState();
+  ConsumerState<BirthdayScreen> createState() => BirthdayScreenState();
 }
 
-class _BirthdayScreenState extends State<BirthdayScreen> {
+class BirthdayScreenState extends ConsumerState<BirthdayScreen> {
   String birthday = "";
 
   // 현재 날짜
@@ -50,8 +50,9 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
   void onNextTap(BuildContext context) {
     // 유효성 검사
     if (birthday.isEmpty) return;
-
-    context.goNamed(InterestsScreen.routeName);
+    ref.read(signUpProvider.notifier).signUp();
+    print(ref.read(signUpForm));
+    // context.goNamed(InterestsScreen.routeName);
   }
 
   // DateFormat & TextField Context Update
@@ -150,7 +151,9 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
             Gaps.v32,
             GestureDetector(
               onTap: () => onNextTap(context),
-              child: FormButton(disabled: birthday.isEmpty),
+              child: FormButton(
+                disabled: ref.watch(signUpProvider).isLoading,
+              ),
             ),
           ],
         ),
