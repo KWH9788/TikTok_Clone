@@ -14,6 +14,9 @@ import 'package:tiktok_clone/screens/features/videos/video_recording_screen.dart
 // 다른 Provider를 읽을 수 있게 GoRouter를 Provider안에 넣음
 final routerProvider = Provider(
   (ref) {
+    /// 사용자의 인증 상태를 실시간으로 감지
+    // ref.watch(authStream);
+
     return GoRouter(
       initialLocation: "/home",
       redirect: (context, state) {

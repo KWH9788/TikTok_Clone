@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
+import 'package:tiktok_clone/screens/features/authentication/repos/authentication_repo.dart';
+import 'package:tiktok_clone/screens/features/authentication/sign_up_screen.dart';
 import 'package:tiktok_clone/screens/features/videos/view_models/playback_config_vm.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -110,31 +113,10 @@ class SettingsScreen extends ConsumerWidget {
                         CupertinoDialogAction(
                           isDestructiveAction: true,
                           child: const Text("Yes"),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                title: const Text("Log out (ios)"),
-                textColor: Colors.red,
-                onTap: () {
-                  showCupertinoModalPopup(
-                    context: context,
-                    builder: (context) => CupertinoActionSheet(
-                      title: const Text("Are you sure?"),
-                      message: const Text("Pls dont go"),
-                      actions: [
-                        CupertinoActionSheetAction(
-                          child: const Text("No"),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                        CupertinoActionSheetAction(
-                          isDestructiveAction: true,
-                          child: const Text("Yes"),
-                          onPressed: () => Navigator.of(context).pop(),
+                          onPressed: () {
+                            ref.read(authRepo).signOut();
+                            context.go(SignUpScreen.routeUrl);
+                          },
                         ),
                       ],
                     ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
@@ -8,7 +9,9 @@ import 'package:tiktok_clone/screens/features/authentication/log_in_screen.dart'
 import 'package:tiktok_clone/screens/features/authentication/username_screen.dart';
 import 'package:tiktok_clone/screens/features/authentication/widgets/auth_button.dart';
 
-class SignUpScreen extends StatelessWidget {
+import '../videos/view_models/social_auth_view_model.dart';
+
+class SignUpScreen extends ConsumerWidget {
   static String routeName = "signup";
   static String routeUrl = "/";
   const SignUpScreen({super.key});
@@ -27,7 +30,7 @@ class SignUpScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     print(MediaQuery.of(context).platformBrightness);
     return OrientationBuilder(
       builder: (context, orientation) {
@@ -64,9 +67,11 @@ class SignUpScreen extends StatelessWidget {
                       onTapEvent: onEmailTap,
                     ),
                     AuthButton(
-                      text: "Continue with Apple",
-                      icon: const FaIcon(FontAwesomeIcons.apple),
-                      onTapEvent: (context) {},
+                      text: "Continue with Github",
+                      icon: const FaIcon(FontAwesomeIcons.github),
+                      onTapEvent: (context) => ref
+                          .read(socialAuthProvider.notifier)
+                          .githubSignIn(context),
                     ),
                   ],
                   if (orientation == Orientation.landscape)

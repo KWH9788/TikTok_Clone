@@ -50,7 +50,7 @@ class BirthdayScreenState extends ConsumerState<BirthdayScreen> {
   void onNextTap(BuildContext context) {
     // 유효성 검사
     if (birthday.isEmpty) return;
-    ref.read(signUpProvider.notifier).signUp();
+    ref.read(signUpProvider.notifier).signUp(context);
     print(ref.read(signUpForm));
     // context.goNamed(InterestsScreen.routeName);
   }
